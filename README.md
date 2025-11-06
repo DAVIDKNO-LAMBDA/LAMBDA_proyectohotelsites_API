@@ -230,7 +230,7 @@ dashboard/data/
 ```
 
 ### 📅 **Filtros de Período**
-```javascript
+
 // Filtros jerárquicos soportados:
 {
   year: 2025,        // Año específico
@@ -384,13 +384,6 @@ PptoaHoy = CALCULATE(
 
 ---
 
-## 📞 Soporte y Contacto
-
-### 🆘 **Para reportar issues:**
-1. Crear issue en el repositorio con logs detallados
-2. Incluir pasos para reproducir el problema
-3. Especificar navegador y versión si es issue de frontend
-
 ### 🔧 **Para desarrollo:**
 - **Backend**: Django 5.0.6 + Django REST Framework
 - **Frontend**: React 18 + TypeScript + Vite
@@ -404,19 +397,9 @@ PptoaHoy = CALCULATE(
 4. Login en frontend con usuario Admin
 5. Verificar dashboard con métricas al 99%+ de precisión
 
----
 
-## 📄 Licencia
 
-Este proyecto es propietario de **Lambda Hotels Group** y está destinado exclusivamente para uso interno de la organización.
 
----
-
-## 🎉 Reconocimientos
-
-Desarrollado para replicar exactamente las métricas y visualizaciones del dashboard Power BI existente, garantizando continuidad y precisión en el análisis de datos hoteleros.
-
-**🏨 Sites Hotels Dashboard** - Versión 1.0.0
 
 
 Backend (Terminal 1)
