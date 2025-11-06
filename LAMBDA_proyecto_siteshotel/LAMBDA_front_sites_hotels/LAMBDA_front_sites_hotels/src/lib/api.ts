@@ -243,11 +243,23 @@ class ApiService {
   // ===============================
   // 📊 Dashboard / KPIs
   // ===============================
-  async getDashboardMetrics(property: string, area: string, period: string) {
+  async getDashboardMetrics(property: string, area: string, dateFilter: any) {
     try {
-      const response = await this.client.get("/dashboard/metrics/", {
-        params: { property, area, period },
-      });
+      // Construir parámetros incluyendo filtros jerárquicos
+      const params: any = { property, area };
+      
+      // Si dateFilter es un objeto con filtros jerárquicos
+      if (typeof dateFilter === 'object' && dateFilter !== null) {
+        if (dateFilter.year) params.year = dateFilter.year;
+        if (dateFilter.quarter) params.quarter = dateFilter.quarter;
+        if (dateFilter.month) params.month = dateFilter.month;
+        if (dateFilter.day) params.day = dateFilter.day;
+      } else if (typeof dateFilter === 'string') {
+        // Compatibilidad con filtros de período simples
+        params.period = dateFilter;
+      }
+      
+      const response = await this.client.get("/dashboard/metrics/", { params });
       return response.data;
     } catch (error) {
       throw this.handleApiError(error as AxiosError);

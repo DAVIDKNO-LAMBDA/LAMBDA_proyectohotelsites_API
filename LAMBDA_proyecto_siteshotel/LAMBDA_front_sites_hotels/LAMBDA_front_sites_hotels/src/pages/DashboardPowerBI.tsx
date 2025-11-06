@@ -11,7 +11,7 @@ import { useFilters } from "@/contexts/FilterContext";
 import { KPICard } from "@/components/dashboard/KPICard";
 import { useDashboardData } from "@/hooks/useDashboardData";
 
-export const Dashboard: React.FC = () => {
+export const DashboardPowerBI: React.FC = () => {
   // Obtener información del usuario
   const { user } = useAuth();
   const { property, area, dateFilter } = useFilters();
@@ -177,4 +177,4 @@ export const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardPowerBI;

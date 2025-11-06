@@ -1,18 +1,22 @@
 import { useState, useEffect } from "react";
 import { apiService } from "@/lib/api";
+import { useFilters, DateFilter } from "@/contexts/FilterContext";
 
-export const useDashboardData = (property: string, area: string, period: string) => {
+export const useDashboardData = () => {
+  const { property, area, dateFilter } = useFilters();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!property) return;
-
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await apiService.getDashboardMetrics(property, area, period);
+        
+        console.log('🔍 Solicitando datos con filtros:', { property, area, dateFilter });
+        
+        // Enviar filtros jerárquicos directamente al backend
+        const response = await apiService.getDashboardMetrics(property, area, dateFilter);
         setData(response.metrics || response);
       } catch (err: any) {
         setError(err.message);
@@ -22,7 +26,7 @@ export const useDashboardData = (property: string, area: string, period: string)
     };
 
     fetchData();
-  }, [property, area, period]);
+  }, [property, area, dateFilter]);
 
   return { data, loading, error };
 };

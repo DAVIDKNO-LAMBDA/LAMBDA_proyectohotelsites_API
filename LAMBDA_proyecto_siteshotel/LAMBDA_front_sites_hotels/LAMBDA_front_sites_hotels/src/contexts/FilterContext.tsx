@@ -10,8 +10,16 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-// Tipos de periodo disponibles
-export type PeriodType = 'today' | 'week' | 'month' | 'quarter' | 'year' | 'custom';
+// Tipos de periodo disponibles - Actualizados para el sistema hotelero
+export type PeriodType = 'day' | 'month' | 'year' | 'custom';
+
+// Nuevos tipos para fecha específica - Con trimestres como Power BI
+export interface DateFilter {
+  year?: number;      // Opcional
+  quarter?: number;   // 1-4 (Qtr 1, Qtr 2, etc.)
+  month?: number;     // 1-12
+  day?: number;       // 1-31
+}
 
 // Sedes/Propiedades disponibles
 export type PropertyType = 'all' | 'sites45' | 'sitesBAQ' | 'sitesGroup' | 'sitesRecreo';
@@ -33,6 +41,10 @@ interface FilterContextType {
   area: AreaType;
   setArea: (area: AreaType) => void;
   
+  // Filtro de fecha específica
+  dateFilter: DateFilter;
+  setDateFilter: (filter: DateFilter) => void;
+  
   // Rango de fechas personalizado (para periodo 'custom')
   dateRange: {
     from: Date | null;
@@ -49,14 +61,21 @@ const FilterContext = createContext<FilterContextType | undefined>(undefined);
  * Envuelve la aplicación para proporcionar funcionalidad de filtros globales
  */
 export const FilterProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Estado del periodo seleccionado (por defecto: hoy)
-  const [period, setPeriod] = useState<PeriodType>('today');
+  // Estado del periodo seleccionado (por defecto: por mes)
+  const [period, setPeriod] = useState<PeriodType>('month');
   
   // Estado de la propiedad seleccionada (por defecto: todas)
   const [property, setProperty] = useState<PropertyType>('all');
   
   // Estado del área seleccionada (por defecto: todas)
   const [area, setArea] = useState<AreaType>('all');
+  
+  // Estado del filtro de fecha específica - Sin selección inicial
+  const [dateFilter, setDateFilter] = useState<DateFilter>({
+    year: undefined,
+    month: undefined,
+    day: undefined,
+  });
   
   // Estado del rango de fechas personalizado
   const [dateRange, setDateRange] = useState<{
@@ -75,6 +94,8 @@ export const FilterProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     setProperty,
     area,
     setArea,
+    dateFilter,
+    setDateFilter,
     dateRange,
     setDateRange,
   };
@@ -100,11 +121,9 @@ export const useFilters = (): FilterContextType => {
  */
 export const getPeriodLabel = (period: PeriodType): string => {
   const labels: Record<PeriodType, string> = {
-    today: 'Hoy',
-    week: 'Últimos 7 días',
-    month: 'Mes actual',
-    quarter: 'Último Trimestre',
-    year: 'Año actual',
+    day: 'Por día',
+    month: 'Por mes',
+    year: 'Por año',
     custom: 'Personalizado',
   };
   return labels[period];

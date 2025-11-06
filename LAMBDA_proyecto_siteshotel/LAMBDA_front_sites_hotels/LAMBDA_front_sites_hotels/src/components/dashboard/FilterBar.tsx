@@ -3,15 +3,16 @@
  * 
  * Este componente proporciona controles de filtrado que afectan
  * todos los datos mostrados en el dashboard:
- * - Selector de periodo (hoy, semana, mes, etc.)
+ * - Selector de fecha jerárquico (año, trimestre, mes, día)
  * - Selector de sede/propiedad (Sites 45, BAQ, Group, Recreo)
+ * - Selector de área (Alojamiento, Restaurante, etc.)
  * 
  * Los filtros se sincronizan con el FilterContext para que todos
  * los componentes de la aplicación reaccionen a los cambios
  */
 
 import React from 'react';
-import { useFilters, PropertyType, PeriodType, AreaType, getPropertyLabel, getAreaLabel } from '@/contexts/FilterContext';
+import { useFilters, PropertyType, AreaType } from '@/contexts/FilterContext';
 import {
   Select,
   SelectContent,
@@ -19,23 +20,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Calendar, Building2, MapPin } from 'lucide-react';
+import { Building2, MapPin } from 'lucide-react';
+import { DateSelector } from './DateSelector';
 
 /**
  * Componente FilterBar
  */
 export const FilterBar: React.FC = () => {
   // Obtener el estado y funciones del contexto de filtros
-  const { period, setPeriod, property, setProperty, area, setArea } = useFilters();
-
-  // Opciones de periodo disponibles
-  const periodOptions: { value: PeriodType; label: string }[] = [
-    { value: 'today', label: 'Hoy' },
-    { value: 'week', label: 'Últimos 7 días' },
-    { value: 'month', label: 'Mes actual' },
-    { value: 'quarter', label: 'Último Trimestre' },
-    { value: 'year', label: 'Año actual' },
-  ];
+  const { property, setProperty, area, setArea } = useFilters();
 
   // Opciones de propiedad disponibles (basadas en las imágenes)
   const propertyOptions: { value: PropertyType; label: string }[] = [
@@ -59,28 +52,15 @@ export const FilterBar: React.FC = () => {
 
   return (
     <div className="flex flex-wrap items-center gap-4 p-4 bg-card rounded-lg border shadow-sm">
-      {/* Selector de Periodo */}
-      <div className="flex items-center gap-2">
-        <Calendar className="w-5 h-5 text-muted-foreground" />
-        <Select value={period} onValueChange={(value) => setPeriod(value as PeriodType)}>
-          <SelectTrigger className="w-[200px] bg-background">
-            <SelectValue placeholder="Seleccionar periodo" />
-          </SelectTrigger>
-          <SelectContent className="bg-popover z-50">
-            {periodOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      
+      {/* Selector de Fecha Jerárquico */}
+      <DateSelector />
 
       {/* Selector de Propiedad/Sede */}
       <div className="flex items-center gap-2">
         <Building2 className="w-5 h-5 text-muted-foreground" />
         <Select value={property} onValueChange={(value) => setProperty(value as PropertyType)}>
-          <SelectTrigger className="w-[200px] bg-background">
+          <SelectTrigger className="w-[180px] bg-background">
             <SelectValue placeholder="Seleccionar propiedad" />
           </SelectTrigger>
           <SelectContent className="bg-popover z-50">
@@ -97,7 +77,7 @@ export const FilterBar: React.FC = () => {
       <div className="flex items-center gap-2">
         <MapPin className="w-5 h-5 text-muted-foreground" />
         <Select value={area} onValueChange={(value) => setArea(value as AreaType)}>
-          <SelectTrigger className="w-[200px] bg-background">
+          <SelectTrigger className="w-[180px] bg-background">
             <SelectValue placeholder="Seleccionar área" />
           </SelectTrigger>
           <SelectContent className="bg-popover z-50">
@@ -110,14 +90,17 @@ export const FilterBar: React.FC = () => {
         </Select>
       </div>
 
-      {/* Indicador de filtros activos */}
-      <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
-        <span className="hidden md:inline">
-          Mostrando: <span className="font-medium text-foreground">{getPropertyLabel(property)}</span>
-          {area !== 'all' && (
-            <span> - <span className="font-medium text-foreground">{getAreaLabel(area)}</span></span>
-          )}
+      {/* Información del filtro activo */}
+      <div className="ml-auto text-sm text-muted-foreground">
+        Filtros activos: 
+        <span className="font-medium text-foreground ml-1">
+          {propertyOptions.find(p => p.value === property)?.label}
         </span>
+        {area !== 'all' && (
+          <span> - <span className="font-medium text-foreground">
+            {areaOptions.find(a => a.value === area)?.label}
+          </span></span>
+        )}
       </div>
     </div>
   );
